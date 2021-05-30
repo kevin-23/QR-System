@@ -1,0 +1,5 @@
+Pyqrcode
+Pypng
+Pymongo
+Pyzbar
+Pillow
