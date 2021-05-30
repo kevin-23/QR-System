@@ -1,0 +1,40 @@
+version: "3.8"
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.0.0/24"
+
+services:
+        app:
+          build: .
+          container_name: qr-generator
+          entrypoint: ["python3", "app.py"]
+          volumes:
+            - /tmp/.X11-unix/:/tmp/.X11-unix/
+            - ./app:/app
+            - ./app/qr-codes:/app/qr-codes
+          environment:
+            - DISPLAY=$DISPLAY
+          networks:
+            app_net:
+              ipv4_address: 172.16.0.2
+          tty: true
+          stdin_open: true
+
+
+        mongodb:
+          image : mongo:4.4.4
+          container_name: mongodb
+          volumes:
+            - /$HOME/data/db/:/data/db/
+          expose:
+            - "27017"
+          networks:
+            app_net:
+              ipv4_address: 172.16.0.3
+          tty: true
+          stdin_open: true
+          restart: unless-stopped
